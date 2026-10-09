@@ -1,0 +1,25 @@
+{
+  "id": "./",
+  "name": "Lofi Surf",
+  "short_name": "Lofi Surf",
+  "description": "Le jeu de surf arcade rétro le plus fou, avec une musique lofi qui s'adapte à l'action.",
+  "lang": "fr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "display_override": ["fullscreen", "standalone"],
+  "orientation": "portrait",
+  "background_color": "#12062b",
+  "theme_color": "#12062b",
+  "categories": ["games", "entertainment"],
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "screenshots": [
+    { "src": "screenshot-1.png", "sizes": "1080x1920", "type": "image/png", "form_factor": "narrow", "label": "Surfe au coucher du soleil" },
+    { "src": "screenshot-2.png", "sizes": "1080x1920", "type": "image/png", "form_factor": "narrow", "label": "Affronte le Roi Crapaud" },
+    { "src": "screenshot-3.png", "sizes": "1080x1920", "type": "image/png", "form_factor": "narrow", "label": "Dans le ventre du cachalot" }
+  ]
+}
