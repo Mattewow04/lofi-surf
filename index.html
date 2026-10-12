@@ -6,6 +6,7 @@
 <title>Lofi Surf</title>
 <meta name="description" content="Lofi Surf : le jeu de surf arcade rétro le plus fou, avec une musique lofi qui s'adapte à l'action.">
 <meta name="theme-color" content="#12062b">
+<meta name="google-adsense-account" content="ca-pub-9177935700442558">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -1977,7 +1978,7 @@ function updateKappa(m,dt,vx){
 /* ================= ADS: rewarded revive + interstitial =================
    Uses Google's H5 Games Ads (Ad Placement API). Paste your AdSense publisher id below once
    your site is approved; until then a short demo ad stands in so the flow can be tested. */
-const ADS={client:'', test:false}; // e.g. client:'ca-pub-1234567890123456'
+const ADS={client:'ca-pub-9177935700442558', test:false}; // e.g. client:'ca-pub-1234567890123456'
 window.adsbygoogle=window.adsbygoogle||[];
 const adBreak=o=>window.adsbygoogle.push(o), adConfig=adBreak;
 (function(){ if(!ADS.client) return; const sc=document.createElement('script'); sc.async=true; sc.crossOrigin='anonymous';
@@ -1989,16 +1990,20 @@ function demoAd(sec,done){ const box=$('adBox'), fill=$('adFill'), note=$('adNot
   const tick=()=>{ const e=(performance.now()-t0)/1000; fill.style.width=Math.min(100,e/sec*100)+'%'; note.textContent=TR('La pub se termine dans')+' '+Math.max(0,Math.ceil(sec-e))+' s';
     if(e>=sec){ box.hidden=true; adResume(); done(true); } else requestAnimationFrame(tick); }; tick(); }
 function adInterstitial(next){ if(!ADS.client) return demoAd(3,()=>next());
-  adBreak({type:'next',name:'rejouer',beforeAd:adPause,afterAd:adResume,adBreakDone:()=>next()}); }
+  let done=false; const go=()=>{ if(!done){ done=true; next(); } }; const to=setTimeout(go,4000);
+  adBreak({type:'next',name:'rejouer',beforeAd:()=>{ clearTimeout(to); adPause(); },afterAd:adResume,adBreakDone:go}); }
 let rewardShow=null, rewardCb=null;
 function prepareReward(){ rewardShow=null; rewardCb=null; const btn=$('bRevive');
   if(!ADS.client){ rewardShow=ok=>demoAd(5,ok); btn.disabled=false; btn.textContent=TR('▶ REVIVRE'); return; }
   btn.disabled=true; btn.textContent=TR('CHARGEMENT…');
+  // no ad available (not approved yet, ad blocker, no fill): the player still gets a free revive
+  const free=()=>{ if(rewardShow) return; rewardShow=ok=>ok(true); btn.disabled=false; btn.textContent=TR('▶ REVIVRE'); };
+  setTimeout(free,2500);
   adBreak({type:'reward',name:'revivre',beforeAd:adPause,afterAd:adResume,
     beforeReward(showAdFn){ rewardShow=ok=>{ rewardCb=ok; showAdFn(); }; btn.disabled=false; btn.textContent=TR('▶ REVIVRE'); },
     adDismissed(){ const c=rewardCb; rewardCb=null; c&&c(false); },
     adViewed(){ const c=rewardCb; rewardCb=null; c&&c(true); },
-    adBreakDone(){ if(!rewardShow) btn.textContent=TR('PUB INDISPONIBLE'); } });
+    adBreakDone(){ free(); } });
 }
 function offerRevive(){ // one second chance per run, by watching an ad
   if(G.revived){ showOver(); return; }
